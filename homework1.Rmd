@@ -1,0 +1,310 @@
+---
+title: "STATS 20: Homework 1"
+author: "Brandon Liu -- UID: 306-375-425"
+date: "2025-01-20"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '4'
+---
+## Question 1
+
+### (a)
+“**Sometimes you have to make the hardest climb to see the most beautiful sunrise.** I read that once on an old lady’s decorative pillow, but it is really how I feel today. I’ve climbed a very weird and rocky mountain, and it was a pain in the ass, and my legs are tired, and I’m starving. But *the sun is rising over a sea of love and waffles and possibility.* So *I’m just gonna relax and take a deep breath and enjoy this view for as long as I possibly can.*” – Leslie Knope (from ***Parks and Recreation***)
+
+### (b)
+|Homework|Midterm|Final Exam|Final Project|
+|-------:|------:|---------:|------------:|
+|18%|30%|40%|12%|
+
+### (c)
+    
+* 2024
+* Fall
+* MATH 31B: Integration and Infinite Series
+* ECON 2: Principles of Macroeconomics
+* CHIN 4: Intermediate Modern Chinese
+* ART HIS 29: Chinese Art
+
+* 2025
+* Winter
+* MATH 32A: Calculus of Several Variables
+* ECON 11: Microeconomic Theory
+* STATS 20: Statistical Programming with R
+* CHIN 5: Intermediate Modern Chinese
+* PHYSCI 5: Issues in Human Physiology: Diet and Exercise
+
+### (d)
+![Cute kitten wearing a blue hat and scarf](/Users/brandonliu777/Desktop/cutekitten.png)
+
+Cute kitten wearing a blue hat and scarf: https://bit.ly/3Edl2rz
+
+\newpage
+
+## Question 2
+
+### (a)
+These videos are meant to emphasize the importance of making your language, in\ this case, code, as clear as possible. Since R outputs strictly what is written\ and does not make extraneous assumptions, it is crucial that you define every\ object, notate every function properly, and adopt syntax according to the\ Tidyverse style guide, all to ensure that your code will run the way it was\ intended to run. 
+
+### (b)
+Please follow these *very detailed* instructions to make the perfect grilled cheese sandwich:
+
+1. Open a bag of white bread and pick out two bread slices, preferably slices that are not the ends of the loaf.
+
+2. Measure out 1 tablespoon of salted butter and place the portioned out butter in a microwave-safe ramekin. Open the microwave door, place the ramekin inside the microwave, and microwave on high power for 20 seconds or less, depending on how fast it takes for the butter to reach a softened consistency. Keep an eye on the butter! When the microwave beeps or the butter is creamy and soft, open the microwave door and remove the ramekin. If the butter is slightly too liquid, you will need to wait a few minutes for it to cool and slightly harden.
+
+3. Take a butter knife and use the serrated part to scoop 1/2 of the butter portion onto one of the white surface of the bread. To clarify, spread the butter on only one side of the bread. Use the knife to spread a thin, even layer of butter onto the bread. Repeat this process for the remaining butter and the second bread slice.
+
+4. Flip both bread slices over. In a small bowl, portion out 1 tablespoon of mayonnaise. *Mayo will help the grilled choice produce a crispy outer edge and golden brown color!* Using the serrated part of the same butter knife, scoop 1/2 of the mayo portion onto the un-buttered white surface of the bread. Use the knife to spread a thin, even layer of mayo onto the bread. Repeat this process for the remaining mayo and the second bread slice.
+
+5. Flip over one of the bread slices so that the buttered side is facing up. On this slice you just flipped over, place your preferred choice of shredded or sliced cheese. My personal favorite is smoked gouda. I will either place 2 slices of cheese or 1/4 cup of grated gouda onto the bread. Take your other bread slice and place it on top of the cheese, forming a complete sandwich with the mayoed sides on the outside and the buttered sides on the inside.
+
+6. Place a non-stick pan onto a stovetop burner. Turn on the heat to medium low. When the pan starts to emanate a good amount of heat, place the sandwich onto the pan and cook for 4 minutes or until the bottom is golden brown. Use a heatproof spatula to gently lift the sandwich and flip it 180 degrees onto the pan so that the unbrowned side of the sandwich is touching the pan. Cook for 3 minutes or until both sides are golden brown and the cheese is fully melted.
+
+7. Turn the heat off and use the spatula to remove the sandwich from the pan and transfer it to a plate for serving. Use the butter knife to cut the sandwich in half diagonally. Enjoy your grilled cheese!
+
+## Question 3
+
+### (a)
+(i)
+```{r Question 3a (i)}
+(6^8) / (16^5)
+```
+(ii)
+```{r Question 3a (ii)}
+101^(-8 / 7)
+```
+(iii)
+```{r Question 3a (iii)}
+8 + (3 * pi) - 3 + ((4/2) * (-1))
+```
+
+### (b)
+(i)
+```{r Question 3b (i)}
+log(54, base = 3)
+```
+(ii)
+```{r Question 3b (ii)}
+exp(exp(sqrt(2)))
+```
+(iii)
+```{r Question 3b (iii)}
+(exp(pi) + exp(-pi)) / 2
+```
+### (c)
+(i)
+```{r Question 3c (i)}
+119 %/% 25
+```
+(ii)
+```{r Question 3c (ii)}
+119 %% 25
+```
+
+## Question 4
+
+### (a)
+```{r Question 4a}
+vol_1 <- (4 / 3) * pi * (1)^3
+vol_1
+```
+
+### (b)
+```{r Question 4b}
+vol_4 <- (4 / 3) * pi * (4)^3
+vol_4
+```
+
+## Question 5
+
+### (a)
+```{r Question 5a}
+# test inputs
+# recall that p-hat = x/n
+x <- 10
+n <- 25
+p0 <- 0.5
+
+# code
+z_prop <- (x/25 - p0) / sqrt(((p0) * (1 - p0)) / n)
+
+# verify that z_prop should be -1
+z_prop
+```
+
+### (b)
+```{r Question 5b}
+# p-hat = 10/13
+# p-naught = 0.6
+
+z_prop <- ((10/13) - 0.6) / sqrt(((0.6) * (1 - 0.6)) / 13)
+z_prop
+```
+
+### (c)
+This is a two-tailed test since we are testing the null hypothesis (H~0~) that the true proportion of Pawnee residents who prefer waffles is 0.6 (p = 0.6) against the alternative hypothesis (H~A~) states that the true proportion is different from 0.6 (p is not equal to 0.6). A z-statistic of approximately 1.25 corresponds to P(Z>1.25) = 0.1056. Since this a two-tailed test, the p-value is 0.1056 * 2 = 0.2112. Since p = 0.2112 > alpha = 0.05, we fail to reject the null hypothesis. **Thus, we *do not* have convincing evidence that the true proportion of Pawnee residents who prefer waffles is different from 0.6.**
+
+### (d)
+```{r Question 5d}
+# p-hat = 30/39
+# p-naught = 0.6
+
+z_prop <- ((30/39) - 0.6) / sqrt(((0.6) * (1 - 0.6)) / 39)
+z_prop
+```
+This is a two-tailed test since we are testing the null hypothesis (H~0~) that the true proportion of Pawnee residents who prefer waffles is 0.6 (p = 0.6) against the alternative hypothesis (H~A~) states that the true proportion is different from 0.6 (p is not equal to 0.6). A z-statistic of approximately 2.16 corresponds to P(Z>2.16) = 0.0154. Since this a two-tailed test, the p-value is 0.0154 * 2 = 0.0308. Since p = 0.0308 < alpha = 0.05, we reject the null hypothesis. **Thus, we *do* have convincing evidence that the true proportion of Pawnee residents who prefer waffles is different from 0.6.**
+
+## Question 6
+
+```{r Question 6a}
+# capitalized cost = price - down
+# residual value = msrp * res
+# monthly depreciation = (capitalized cost - residual value) / n
+# monthly finance charge = (capitalized cost + residual value) * mf
+# subtotal = monthly depreciation + monthly finance charge
+# total = subtotal * (1 + tax)
+
+msrp <- 31495
+price <- 29895
+down <- 2500
+n <- 36
+res <- 0.52
+mf <- 0.0016
+tax <- 0.095
+
+monthly_lease_payment <- ((((price - down) - (msrp * res)) / n) + ((price - down + msrp * res) * mf)) * (1 + tax)
+
+monthly_lease_payment
+```
+
+## Question 7
+
+### (a)
+Without using R, the minimum number of coins required to equal 47 cents is 5 coins--1 quarter (25 cents), 2 dimes (20 cents), and 2 pennies (2 cents). I found the minimum number of coins needed by finding the maximum number of coins from highest to lowest value that is less than equal to 47 cents.
+
+For example, I started by finding how many quarters, the highest value coin, could be added to equal 47 cents. At most 1 quarter could be added. The next highest value coin is the dime. At most 2 dimes could be added. By now, the total value was 45 cents, with 2 cents remaining. Since a nickel exceeds this amount, adding 2 pennies is the only possible way to reach 47 cents. In total, 5 coins were needed.
+
+### (b)
+The strategy is to find the maximum number of coins from highest to lowest value that is less than equal to the specified number of cents.
+
+Start by adding as many quarters as possible. Once the value of a quarter exceeds the remaining value, move onto dimes. Add as many dimes as possible. Once the value of a dime exceeds the remaining value, move onto nickels. Add as many nickels as possible. Once the value of a nickel exceeds the remaining value, move onto pennies. Add as many pennies as possible. Then, count up the number of coins added altogether.
+
+### (c)
+```{r Question 7c}
+# In whole numbers, define the starting amount of cents
+# amount started must be an integer; decimals do not work with the modulus (%%)
+amount_started <- 47
+
+# Find the maximum number of quarters possible
+quarters <- amount_started %/% 25
+amount_remaining <- amount_started %% 25
+
+# Find the maximum number of dimes possible
+dimes <- amount_remaining %/% 10
+amount_remaining <- amount_remaining %% 10
+
+# Find the maximum number of nickels possible
+nickels <- amount_remaining %/% 5
+amount_remaining <- amount_remaining %% 5
+
+# Find the maximum number of pennies possible
+pennies <- amount_remaining
+
+# Find the minimum number of coins
+minimum_coins <- quarters + dimes + nickels + pennies
+minimum_coins
+```
+
+### (d)
+(i)
+```{r Question 7d (i)}
+# Define a new starting amount of cents
+amount_started <- 32
+
+quarters <- amount_started %/% 25
+amount_remaining <- amount_started %% 25
+
+dimes <- amount_remaining %/% 10
+amount_remaining <- amount_remaining %% 10
+
+nickels <- amount_remaining %/% 5
+amount_remaining <- amount_remaining %% 5
+
+pennies <- amount_remaining
+
+minimum_coins <- quarters + dimes + nickels + pennies
+minimum_coins
+```
+(ii)
+```{r Question 3d (ii)}
+# Define a new starting amount of cents
+amount_started <- 49
+
+quarters <- amount_started %/% 25
+amount_remaining <- amount_started %% 25
+
+dimes <- amount_remaining %/% 10
+amount_remaining <- amount_remaining %% 10
+
+nickels <- amount_remaining %/% 5
+amount_remaining <- amount_remaining %% 5
+
+pennies <- amount_remaining
+
+minimum_coins <- quarters + dimes + nickels + pennies
+minimum_coins
+```
+(iii)
+```{r Question 3d (iii)}
+# Define a new starting amount of cents
+amount_started <- 137
+
+quarters <- amount_started %/% 25
+amount_remaining <- amount_started %% 25
+
+dimes <- amount_remaining %/% 10
+amount_remaining <- amount_remaining %% 10
+
+nickels <- amount_remaining %/% 5
+amount_remaining <- amount_remaining %% 5
+
+pennies <- amount_remaining
+
+minimum_coins <- quarters + dimes + nickels + pennies
+minimum_coins
+```
+
+### (e)
+To find the number of cents less than 100 which requires the most coins, I first recognized that cents ending in 4s or 9s would maximize the number of pennies. Since pennies are the lowest valued coin, it is helpful to maximize their amount. Thus, this leaves the possibilities of all cent amounts ending in 4s and 9s going from 99 cents to 94 cents to 89 cents to 84 cents, all the way down to 4 cents. 
+
+Starting with the largest amount, 99 cents, makes sense since more cents should require more coins. The minimum number of coins required by 99 cents is 9 coins--3 quarters, 2 dimes, and 4 pennies.
+
+When repeating this process for the next largest amount ending in 4s or 9s, 94 cents, I saw that the minimum number of coins required is also 9 coins--3 quarters, 1 dime, 1 nickel, and 4 pennies.
+
+When repeating this process for the next largest amount ending in 4s or 9s, 89 cents, I saw that the minimum number of coins decreases to 8 coins--3 quarters, 1 dime, and 4 pennies.
+
+When repeating this process for the next largest amount ending in 4s or 9s, 84 cents, I saw that the minimum number of coins is also 8 coins--3 quarters, 1 nickel, and 4 pennies.
+
+Thus, this decreasing trend reveals that 99 and 94 cents are the number of cents less than 100 which require the most coins. Specifically, 9 coins. This can be verified using the code from (c).
+```{r Question 7e}
+# Define a new starting amount of cents
+amount_started <- 99
+
+quarters <- amount_started %/% 25
+amount_remaining <- amount_started %% 25
+
+dimes <- amount_remaining %/% 10
+amount_remaining <- amount_remaining %% 10
+
+nickels <- amount_remaining %/% 5
+amount_remaining <- amount_remaining %% 5
+
+pennies <- amount_remaining
+
+minimum_coins <- quarters + dimes + nickels + pennies
+minimum_coins
+```
+
+## Question 8
+I'd like to become proficient at R and be able to apply my knowledge to personal data science projects involving real-world data. I am also hoping to create interesting graphs with R and learn to apply R algorithms to machine learning.

@@ -1,0 +1,233 @@
+---
+title: "Week 7 Discussion Assignment"
+author: "Brandon Liu"
+date: "2025-02-18"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For the first 3 problems with visualizations in R Studio, we will be using the `Titanic` data set. Run the following chunk to read the data set into your working session. You only need to run the install.packages() line once. Comment that line out after it runs in order to prevent a knitting error. 
+
+```{r}
+# install.packages("titanic")
+library("titanic")
+data("titanic_train")
+```
+Run the following chunk to ensure your data is read in correctly. 
+```{r}
+head(titanic_train)
+```
+# Problem 1: Categorical Variables
+
+## Part a) 
+
+Using Base-R Visualization, create a stacked bar plot for the sex of the passenger (as indicated by the data) and whether or not they survived. Add the following to your bar plot:
+
+* An appropriate title
+* X- and y- axis labels
+* Renaming of the x-axis sub-labels (i.e. change the binary to string representation "Male/Female")
+* A coloring scheme for the survivor rates
+* A legend depicting the coloring scheme
+```{r Question 1a}
+titanic_table <- table(titanic_train$Sex,titanic_train$Survived)
+
+# create a stacked bar plot
+barplot(titanic_table,
+  main = "Titanic Survival Rates Across Gender",
+  xlab = "Gender of Passengers",
+  ylab = "Number of Passengers",
+  names = c("Male", "Female"),
+  col = c("blue", "red", 0.5)
+)
+
+# add a legend
+legend("topright", legend = c("Survived", "Not Survived"),
+       fill = c("blue", "red"))
+```
+
+## Part b)
+
+Now repeat all of part a) but with a side-by-side bar plot instead. Comment on which you prefer for this visualization and why. 
+
+```{r Question 1b}
+titanic_table <- table(titanic_train$Sex, titanic_train$Survived)
+
+# create a side-by-side bar plot
+barplot(titanic_table, beside = TRUE,
+  main = "Titanic Survival Rates Across Gender",
+  xlab = "Gender of Passengers",
+  ylab = "Number of Passengers",
+  names = c("Male", "Female"),
+  col = c("blue", "red")
+)
+
+# add a legend
+legend("topright", legend = c("Survived", "Not Survived"),
+       fill = c("blue", "red"))
+
+# stacked bar plot is preferred; it shows the direct composition of survivors &
+# non-survivors for each gender, and how those parts contribute to the total
+```
+# Problem 2: Continuous Variables
+
+## Part a) 
+
+Using Base-R Visualization, create a boxplot for the costs of the ticket to ride on the titanic. In addition, separate the boxplot based on whether or not the passenger survived. Add the following to your boxplot:
+
+* An appropriate title
+* X- and y- axis labels
+* X-axis sub-labels
+* A coloring scheme for the survivor rates
+* A legend for the coloring scheme
+
+```{r Question 2a}
+titanic_table <- table(titanic_train$Fare, titanic_train$Survived)
+
+# create a box plot
+boxplot(titanic_train$Fare ~ titanic_train$Survived, data = titanic_table,
+  main = "Titanic Ticket Prices",
+  xlab = "Survival Status of Passengers",
+  ylab = "Price of Ticket",
+  names = c("Did Not Survive", "Survived"),
+  col = c("blue", "red")
+)
+
+# add a legend
+legend("topright", legend = c("Not Survived", "Survived"),
+       fill = c("blue", "red"))
+```
+
+## Part b) 
+
+For just the ticket cost variable in part a), now create a histogram. Add the following to your histogram:
+
+* A density line for the variable
+* A vertical line representing the median of the variable
+* Differing colors for the density and vertical lines
+* A legend for the added lines
+* An appropriate title
+* X- and y- axis labels
+
+```{r Question 2b}
+# create a histogram
+hist(titanic_train$Fare,
+  prob = TRUE,
+  main = "Titanic Ticket Prices",
+  xlab = "Ticket Cost",
+  col = c("blue", "red")
+)
+
+# add a density line
+lines(density(titanic_train$Fare), lwd = 2, col ="yellow")
+
+# add a vertical median line
+abline(v = median(titanic_train$Fare), lwd = 2, col = "green")
+
+# add a legend
+legend("topright", legend = c("Density", "Vertical"),
+       fill = c("yellow", "green"))
+```
+
+# Problem 3 Experimenting with ggplot2
+
+## Part a) 
+
+Use ggplot2 to create a scatter plot of ticket price paid by passenger age colored by whether or not they survived. Add an x-label and y-label as well. No need to do any data cleaning and you can ignore any warnings. 
+
+```{r Question 3a}
+library(ggplot2)
+data(titanic_train)
+ggplot(data = titanic_train) +
+  geom_point(aes(x = Age, y = Fare, color = Survived)) + 
+  xlab("Age") + ylab("Fare") + 
+  ggtitle("Titanic Ticket Prices Paid by Passenger Age")
+```
+
+## Part b) 
+
+The following side-by-side histogram coding chunk has been provided to you. Change the code in the chunk below to alter the following things:
+
+* The scaling of the two histograms to better represent the counts i.e. the peak of the two histograms should not be the same height. 
+* Change the fill colors and rim colors of both histograms (you will need a total of 4 different colors).
+* Apply appropriate labels for the x- and y-axis. 
+
+You can refer to this [link](https://www.sthda.com/english/wiki/colors-in-r) for a more expansive list of coloring options. 
+
+
+```{r,echo = FALSE}
+data("titanic_train")
+library(ggplot2)
+```
+
+
+```{r}
+ggplot(data = titanic_train) +
+  facet_wrap(~ as.factor(Survived), scales = "free_y") + 
+  geom_histogram(aes(x = Age, fill = as.factor(Survived), col = as.factor(Survived)), alpha = 0.8) +
+  scale_fill_manual(values = c("yellow", "blue")) + 
+  scale_color_manual(values = c("green", "orange")) + 
+  xlab("Age of Passenger") + 
+  ylab("Number of Passengers") + 
+  theme_minimal() 
+```
+
+
+# Challenge 1
+
+Now it's your turn to try your hand at creating your own visualizations. Search for the dataset in the Week 7 module titled "spotify_data." Import this data set into your working session and assign it the object name **spotify_data**. Verify your data imports correctly by checking the global environment and ensuring your object has 74660 observations and 40 variables. You can also use the `head()` or `view()` functions to preview the data set. 
+```{r Question Ca}
+spotify_data <- read.csv("spotify_data.csv", sep = ";", header = TRUE)
+head(spotify_data)
+```
+
+Create 2 visualizations using **base R plotting functions** of your choosing using the variables listed in the description below. You cannot repeat a visualization method (e.g. making two histograms) and one visualization must include multiple variables. Use proper titles and axes labels. Feel free to play around with other stylings/colorings as well. 
+
+**Description of Select Variables:**
+
+* artist_names: The names(s) of the artist(s) or band(s) that performed the song. 
+* streams: The total number of streams the song received during the week. 
+* duration: The length of the song in milliseconds. 
+* release_date: The release date of the song (year, month, and day). 
+* week: The week when the song was part of the top 200. 1 
+* danceability: A measure of how suitable the track is for dancing, ranging from 0 to 1. Higher values indicate more danceable songs. 
+* energy: A measure of intensity and activity of the song, ranging from 0 to 1. Higher values indicate more energetic tracks. 
+* track_popularity: The popularity score of the track, based on streaming data and other metrics. It ranges from 0 (least popular) to 100 (most popular). 
+* tempo: The speed of the track, measured in beats per minute (BPM)
+* key: The estimated overall key of the track. Integers map to pitches using standard Pitch Class notation . E.g. 0 = C, 1 = C$\sharp$/D$\flat$, 2 = D, and so on. If no key was detected, the value is -1.
+* instrumentalness: Predicts whether a track contains no vocals. “Ooh” and “aah” sounds are treated as instrumental in this context. Rap or spoken word tracks are clearly “vocal”. The closer the instrumentalness value is to 1.0, the greater likelihood the track contains no vocal content. Values above 0.5 are intended to represent instrumental tracks, but confidence is higher as the value approaches 1.0.
+* mode: Indicates the modality (major or minor) of a track, the type of scale from which its melodic content is derived. Major is represented by 1 and minor is 0.
+
+**Explanation of Select Variable Types:**
+
+* artist_names, release_date, week, key, mode: These are all categorical variables. Categorical variables rep resent distinct groups or labels (e.g. artist names or dates). They do not have a numerical meaning.
+* streams, duration, danceability, energy, track_popularity, tempo, instrumentalness: These are numerical variables. Numerical variables represent quantitative data, which can be measured and compared. They can either be continuous (like streams and duration, which can take any value) or scaled (like danceability and energy, which are constrained between 0 and 1).
+
+```{r Question Cb(i)}
+spotify_artists <- table(spotify_data$artist_name)
+
+# create a bar plot (single variable)
+barplot(spotify_artists,
+  main = "Spotify Top Artists",
+  xlab = "Name of Artist",
+  ylab = "Number of Top Albums",
+  xlim = c(0, 1500),
+  ylim = c(0, 1500)
+)
+```
+```{r Question Cc}
+# create a scatter plot (multiple variables)
+plot(spotify_data$energy, spotify_data$streams,
+  main = "Spotify Top Artists",
+  xlab = "Energy Rating",
+  ylab = "Number of Streams",
+  xlim = c(0, 1),
+  ylim = c(0, 8 * 10 ^ 7),
+  pch = 16,
+  col = "green"
+)
+```

@@ -1,0 +1,244 @@
+---
+title: 'Stats 20: Homework 3 Assignment'
+author: "Brandon Liu -- 306375425"
+date: "`r format(Sys.Date(), '%D')`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '4'
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float: true
+    code_folding: show
+  word_document:
+    toc: true
+    toc_depth: '4'
+---
+\newpage
+
+## Question 1
+
+### (a)
+```{r Question 1a}
+commute_times <- c(14, 12, 20, 19, 15, 20, 28, 20, 20, 18)
+outliers <- commute_times > mean(commute_times) + sd(commute_times) |
+  commute_times < mean(commute_times) - sd(commute_times)
+outliers
+```
+The commute times of 12, 14, and 28 minutes are more than one standard deviation away from the average commute time. I computed this by creating an OR statement of logical operators that capture the commute times greater than one standard deviation away from the mean (in the positive direction) and also the commute times less than one standard deviation away from the mean (in the negative direction).
+
+### (b)
+```{r Question 1b}
+commute_times <- c(14, 12, 20, 19, 15, 20, 28, 20, 20, 18)
+non_outliers <- commute_times > mean(commute_times) - sd(commute_times) &
+  commute_times < mean(commute_times) + sd(commute_times)
+non_outliers
+```
+The commute times of 15, 18, 19, and 20 minutes are within one standard deviation away from the average commute time. I computed this by inverting the code from (a).
+
+### (c)
+```{r Question 1c}
+commute_times <- c(14, 12, 20, 19, 15, 20, 28, 20, 20, 18)
+non_outliers <- commute_times > mean(commute_times) - sd(commute_times) &
+  commute_times < mean(commute_times) + sd(commute_times)
+mean(non_outliers)
+```
+Using the mean() function to calculate the proportion of days Andy had a commute time within one standard deviation of the average commute time works because it tallies all the False = 0 and True = 1 values and averages them. In other words, the mean() function finds the proportion of all commute times that are non-outliers, as a total proportion of all the commute times (non-outliers and outliers).
+\newpage
+
+## Question 2
+```{r Question 2(i)}
+NA & TRUE
+```
+Outputs NA; NA could be TRUE or FALSE. The output could be TRUE or FALSE.
+
+For example:
+
+TRUE & TRUE -> TRUE
+
+FALSE & TRUE -> FALSE
+
+```{r Question 2(ii)}
+NA & FALSE
+```
+Outputs FALSE; NA could be TRUE or FALSE. In either case, the output is FALSE.
+
+For example:
+
+TRUE & FALSE -> FALSE
+
+FALSE & FALSE -> FALSE
+
+```{r Question 2(iii)}
+NA | TRUE
+```
+Outputs TRUE; NA could be TRUE or FALSE. In either case, the output is TRUE.
+
+For example:
+
+TRUE | TRUE -> TRUE
+
+FALSE | TRUE -> TRUE
+
+```{r Question 2(iv)}
+NA | FALSE
+```
+Outputs NA; NA could be TRUE or FALSE. the output could be TRUE or FALSE.
+
+For example:
+TRUE | FALSE -> TRUE
+
+FALSE | FALSE -> FALSE (at least one operand must be TRUE to output)
+\newpage
+
+## Question 3
+```{r Question 3 background} 
+# In whole numbers, define the starting amount of cents
+# amount started must be an integer; decimals do not work with the modulus (%%)
+amount_started <- 47
+
+# Find the maximum number of quarters possible
+quarters <- amount_started %/% 25
+amount_remaining <- amount_started %% 25
+
+# Find the maximum number of dimes possible
+dimes <- amount_remaining %/% 10
+amount_remaining <- amount_remaining %% 10
+
+# Find the maximum number of nickels possible
+nickels <- amount_remaining %/% 5
+amount_remaining <- amount_remaining %% 5
+
+# Find the maximum number of pennies possible
+pennies <- amount_remaining
+
+# Find the minimum number of coins
+minimum_coins <- quarters + dimes + nickels + pennies
+minimum_coins
+```
+
+### (a)
+```{r Question 3a}
+cents <- 1:100
+
+quarters <- cents %/% 25
+amount_remaining <- cents %% 25
+
+dimes <- amount_remaining %/% 10
+amount_remaining <- amount_remaining %% 10
+
+nickels <- amount_remaining %/% 5
+amount_remaining <- amount_remaining %% 5
+
+pennies <- amount_remaining
+
+minimum_coins <- quarters + dimes + nickels + pennies
+minimum_coins
+```
+To vectorize my code, I started by assigning the 'cents' object to the set of numbers from 1 to 100. This would allow my code to generate a minimum number of coins for all cents, 1 to 100. I substituted amount_started from my old code with cents to generate the number of quarters possible and the remaining amount after those quarters.
+
+### (b)
+```{r Question 3b}
+cents <- 1:100
+
+quarters <- cents %/% 25
+amount_remaining <- cents %% 25
+
+dimes <- amount_remaining %/% 10
+amount_remaining <- amount_remaining %% 10
+
+nickels <- amount_remaining %/% 5
+amount_remaining <- amount_remaining %% 5
+
+pennies <- amount_remaining
+
+minimum_coins <- quarters + dimes + nickels + pennies
+which(minimum_coins == max(minimum_coins))
+```
+94 and 99 cents require the maximum (greatest) number of minimum coins. I applied the which() function inputted with the logical argument that the minimum_coins equals the maximum amount of minimum_coins.
+\newpage
+
+## Question 4
+```{r Question 4 background}
+simple_list <- list("vector" = 1:10, "matrix" = matrix(6:1, nrow = 3, ncol = 2))
+```
+
+### (a)
+You cannot use the command simple_list[dollar]NULL <- NULL to add a named component to simple_list that contains the NULL object. This is because NULL is a special object that has a predetermined (reserved) meaning in R, that is, to define an empty or undefined (absent) value. Therefore, NULL cannot be used as a component name. Additionally, although you could assign a NULL value to simple_list[dollar]newcomponent <- NULL, the simple_list[dollar]NULL <- NULL command won't work since NULL is already interpreted as an empty object. In other words, you can't assign a value to an object that is empty.
+
+### (b)
+```{r Question 2b}
+simple_list <- list("vector" = 1:10, "matrix" = matrix(6:1, nrow = 3, ncol = 2))
+simple_list$new_component <- list(NULL)
+# list() creates a valid, non-empty list object
+# recall that NULL is not a valid list component by default
+length(simple_list) == 3
+```
+
+### (c)
+```{r Question 2c}
+simple_list <- list("vector" = 1:10, "matrix" = matrix(6:1, nrow = 3, ncol = 2))
+simple_list$newvalues <- NULL
+simple_list$newvalues
+```
+\newpage
+
+## Question 5
+
+### (a)
+```{r Question 5a(i)}
+# return the mode of a data set
+x <- c(FALSE, FALSE, TRUE, TRUE, FALSE)
+# use names () to extract the values of x, not the frequencies
+y <- as.logical(names(which(table(x) == max(table(x)))))
+y
+```
+```{r Question 5a(ii)}
+# return the mode of a data set
+x <- c(1, 2, 3, 1, 2)
+# use names () to extract the values of x, not the frequencies
+y <- as.numeric(names(which(table(x) == max(table(x)))))
+y
+```
+```{r Question 5a(iii)}
+# return the mode of a data set
+x <- c(3, 3, 2, 2, 1)
+# use names () to extract the values of x, not the frequencies
+y <- as.numeric(names(which(table(x) == max(table(x)))))
+y
+```
+
+### (b)
+```{r Question 5b(i)}
+# return the mode of a data set
+x <- c(FALSE, FALSE, TRUE, TRUE, FALSE)
+# use names () to extract the values of x, not the frequencies
+y <- as.logical(unique(names(which(table(x) == max(table(x))))))[1]
+y
+```
+
+```{r Question 5b(ii)}
+# return the mode of a data set
+x <- c(1, 2, 3, 1, 2)
+# use names () to extract the values of x, not the frequencies
+y <- as.numeric(unique(names(which(table(x) == max(table(x))))))[1]
+y
+```
+
+```{r Question 5b(iii)}
+# return the mode of a data set
+x <- c(3, 3, 2, 2, 1)
+# extract only the first mode value - thus, which() is not needed
+y <- as.numeric(unique(names(table(max(x)))))
+y
+```
+\newpage
+
+## Question 6
+```{r Question 6a}
+# output c(2, 1) using only (), order of operations, & coercion rules
+# if you need more than three sets of () or there are warning messages, it's OK
+jerry <- 2:(8 * (5 %% 3))^-2:(7 > 2)
+jerry
+```

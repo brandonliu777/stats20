@@ -1,0 +1,540 @@
+---
+title: 'Stats 20: Homework 3 Assignment'
+author: "Brandon Liu -- 306375425"
+date: "2025-02-21"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float: true
+    code_folding: show
+  pdf_document:
+    toc: true
+    toc_depth: '4'
+  word_document:
+    toc: true
+    toc_depth: '4'
+---
+\newpage
+
+## Question 1
+
+### Question 1(a)
+```{r Question 1a}
+# install.packages("palmerpenguins")
+library(palmerpenguins)
+data("penguins")
+```
+\newpage
+
+### Question 1(b)
+```{r Question 1b(i)}
+head(penguins)
+```
+```{r Question 1b(ii)}
+str(penguins)
+```
+\newpage
+
+### Question 1(c)
+```{r Question 1c}
+penguins2 <- read.table("/Users/brandonliu777/Downloads/penguins2.txt", header = FALSE, sep = "\t",
+                         stringsAsFactors = TRUE)
+penguins2 <- penguins2[, -1]
+colnames(penguins2) <- colnames(penguins)
+class(penguins)
+
+# install.packages("tibble")
+all.equal(penguins, tibble::as_tibble(penguins2))
+```
+\newpage
+
+### Question 1(d)
+```{r Question 1d(i)}
+species_table <- table(penguins$species)
+
+# bar plot for penguins' species
+barplot(species_table,
+        main = "Species of Penguins",
+        xlab = "Penguin Species",
+        ylab = "Number of Penguins",
+        xlim = c(0, 5),
+        ylim = c(0, 400),
+        names = c("Adelie", "Chinstrap", "Gentoo"),
+        col = c("red", "orange", "yellow")
+)
+```
+This bar graph depicts the relative counts per penguin species, with the Adelie species capturing the greatest proportion, with Gentoo capturing a slightly smaller proprotion, and Chinstrap capturing a proportion about half of the Adelie species.
+
+```{r Question 1d(ii)}
+island_table <- table(penguins$island)
+
+# bar plot for island habitats
+barplot(island_table,
+        main = "Penguins' Island Habitats",
+        xlab = "Island",
+        ylab = "Number of Penguins",
+        xlim = c(0, 5),
+        ylim = c(0, 400),
+        names = c("Biscoe", "Dream", "Torgersen"),
+        col = c("green", "blue", "purple")
+)
+```
+This bar graph depicts the relative penguin counts per island, with the Torgersen island capturing the greatest proportion, with Dream capturing a slightly smaller proportion, and Gentoo capturing a proportion about one-third of Torgersen.
+
+```{r Question 1d(iii)}
+# histogram for bill length (mm)
+hist(penguins$bill_length_mm,
+  main = "Penguins' Bill Length",
+  breaks = 10,
+  freq = TRUE,
+  xlim = c(20, 80),
+  xlab = "Length of Bill (mm)",
+  col = "lightblue"
+)
+```
+This histogram depicts the frequency of each bill length according to the penguin data. The overall distribution seems roughly symmetrial or approximately normal. It is noteworthy to mention, however, that more penguins have relatively shorter bills than relatively longer bills at the extreme ends of the histogram.
+
+```{r Question 1d(iv)}
+# histogram for bill depth (mm)
+hist(penguins$bill_depth_mm,
+  main = "Penguins' Bill Depth",
+  breaks = 10,
+  freq = TRUE,
+  xlim = c(10, 30),
+  xlab = "Depth of Bill (mm)",
+  col = "khaki"
+)
+```
+This histogram depicts the frequency of each bill depth according to the penguin data. The overall distribution seems approximately normal, with a noticeable mode occurring at about 18 mm.
+
+```{r Question 1d(v)}
+# histogram for flipper length (mm)
+hist(penguins$flipper_length_mm,
+  main = "Penguins' Flipper Length",
+  breaks = 10,
+  freq = TRUE,
+  xlim = c(160, 260),
+  xlab = "Length of Flipper (mm)",
+  col = "orchid"
+)
+```
+This histogram depicts the frequency of each flipper length according to the penguin data. The overall distribution appears bimodal, with noticeably higher frequencies occurring in the 180-200 mm and 205-220 mm ranges, and lower frequencies for 200 mm (center of the distribution).
+
+```{r Question 1d(vi)}
+# histogram for body mass (g)
+hist(penguins$body_mass_g,
+  main = "Penguins' Body Mass",
+  breaks = 10,
+  freq = TRUE,
+  xlim = c(2000, 7000),
+  xlab = "Body Mass (g)",
+  col = "salmon"
+)
+```
+This histogram depicts the penguins' body mass according to the penguin data. The overall distribution seems skewed right, as more penguins have a relatively lower body mass than a relatively higher body mass.
+
+```{r Question 1d(vii)}
+sex_table <- table(penguins$sex)
+
+# bar plot for penguins' sex
+barplot(sex_table,
+        main = "Sex of Penguins",
+        xlab = "Sex",
+        ylab = "Number of Penguins",
+        xlim = c(0, 5),
+        ylim = c(0, 400),
+        names = c("Male", "Female"),
+        col = c("orange", "pink")
+)
+```
+This bar graph depicts the relative penguin counts per sex, with Females just barely overtaking Males, in an otherwise even, 50/50 split.
+
+```{r Question 1d(viii)}
+year_table <- table(penguins$year)
+
+# bar plot for year of penguin data collection
+barplot(year_table,
+        main = "Year of Penguin Data Collection",
+        xlab = "Year",
+        ylab = "Number of Penguins",
+        xlim = c(0, 5),
+        ylim = c(0, 400),
+        names = c("2007", "2008", "2009"),
+        col = c("green", "blue", "purple")
+)
+```
+This bar graph depicts the relative penguin data collection counts per year, with a consistent increase in number of penguins' data collected over the years between 2007 and 2009.
+\newpage
+
+### Question 1(e)
+Noticing that the histogram for flipper_length_mm is bimodal, this can be attributed to a variety of factors. Let's analyze each variable individually:
+
+```{r Question 1e(i)}
+# Make histogram for Adelie flipper lengths
+hist(penguins$flipper_length_mm[penguins$species == "Adelie"],
+     prob = FALSE,
+     density = 10,
+     col = "red",
+     xlab = "Flipper Length (mm)",
+     ylab = "Number of Penguins",
+     xlim = c(170, 250),
+     main = "Histogram of Penguin Flipper Lengths")
+
+# Add histogram for Chinstrap flipper lengths
+hist(penguins$flipper_length_mm[penguins$species == "Chinstrap"],
+     prob = FALSE,
+     density = 10,
+     col = "blue",
+     add = TRUE)
+
+# Add histogram for Gentoo flipper lengths
+hist(penguins$flipper_length_mm[penguins$species == "Gentoo"],
+     prob = FALSE,
+     density = 10,
+     col = "purple",
+     add = TRUE)
+
+# Add a legend
+legend("topleft", c("Adelie", "Chinstrap", "Gentoo"),
+       density = 10,
+       fill = c("red", "blue", "purple"))
+```
+
+Species: There are two noticeable peaks in the histogram, one for the Adelie species around 180-200 mm flipper length and another for the Gentoo species around 210-230 mm flipper length. Thus, it is clear that the species variable does help to explain the bimodality in the flipper length data set.
+
+```{r Question 1e(ii)}
+# Make histogram for Biscoe island flipper lengths
+hist(penguins$flipper_length_mm[penguins$island == "Biscoe"],
+     prob = FALSE,
+     density = 10,
+     col = "red",
+     xlab = "Flipper Length (mm)",
+     ylab = "Number of Penguins",
+     xlim = c(170, 250),
+     main = "Histogram of Penguin Flipper Lengths")
+
+# Add histogram for Dream island flipper lengths
+hist(penguins$flipper_length_mm[penguins$island == "Dream"],
+     prob = FALSE,
+     density = 10,
+     col = "blue",
+     add = TRUE)
+
+# Add histogram for Torgersen island flipper lengths
+hist(penguins$flipper_length_mm[penguins$island == "Torgersen"],
+     prob = FALSE,
+     density = 10,
+     col = "purple",
+     add = TRUE)
+
+# Add a legend
+legend("topleft", c("Biscoe", "Dream", "Torgersen"),
+       density = 10,
+       fill = c("red", "blue", "purple"))
+```
+
+Island: There are two noticeable peaks in the histogram, one for the Dream island inhabitants around 185-205 mm flipper length and another for the Biscoe species around 210-230 mm flipper length. Thus, it is clear that the island variable does help to explain the bimodality in the flipper length data set.
+
+```{r Question 1e(iii)}
+# create a box plot modeling penguins' flipper length vs. Bill Length
+plot(penguins$flipper_length_mm ~ penguins$bill_length_mm,
+  main = "Penguins' Flipper Length and Bill Length",
+  xlab = "Bill Length (mm)",
+  ylab = "Flipper Length (mm)",
+  pch = 16,
+  col = "green"
+)
+```
+
+Bill Length: The scatterplot depicts a fairly even distribution of points, with no distinct clumps of data, as would be reflected in bimodal data. Thus, it is clear that the bill length variable does not help to explain the bimodality in the flipper length data set.
+
+```{r Question 1e(iv)}
+# create a box plot modeling penguins' flipper length vs. bill depth
+plot(penguins$flipper_length_mm ~ penguins$bill_depth_mm,
+  main = "Penguins' Flipper Length and Bill Depth",
+  xlab = "Bill Depth (mm)",
+  ylab = "Flipper Length (mm)",
+  pch = 16,
+  col = "green"
+)
+```
+
+Bill Depth: The scatterplot depicts two distinct clumps of data, as would be reflected in bimodal data. Thus, it is clear that the bill depth variable does help to explain the bimodality in the flipper length data set.
+
+```{r Question 1e(v)}
+# create a box plot modeling penguins' flipper length vs. body mass
+plot(penguins$flipper_length_mm ~ penguins$body_mass_g,
+  main = "Penguins' Flipper Length and Body Mass",
+  xlab = "Body Mass (g)",
+  ylab = "Flipper Length (mm)",
+  pch = 16,
+  col = "green"
+)
+```
+
+Body Mass: The scatterplot depicts a fairly even distribution of points, with no distinct clumps of data, as would be reflected in bimodal data. Thus, it is clear that the body mass variable does not help to explain the bimodality in the flipper length data set.
+
+```{r Question 1e(vi)}
+penguins_table <- table(penguins$species, penguins$sex)
+
+# make a bar plot for Male and Female flipper lengths
+barplot(penguins_table, beside = TRUE,
+  main = "Bar Plot of Male and Female Penguin Flipper Lengths",
+  xlab = "Sex of Penguin",
+  ylab = "Flipper Length (mm)",
+  names = c("Male", "Female"),
+  col = c("orange", "orange", "orange", "pink", "pink", "pink")
+)
+
+# add a legend
+legend("topright", legend = c("Male", "Female"),
+       fill = c("orange", "pink"))
+```
+
+Sex: There are two noticeable peaks in the histogram, one pair for the Male penguins and another pair for the Female penguins. Thus, it is clear that the sex variable does help to explain the bimodality in the flipper length data set.
+
+```{r Question 1e(vii)}
+# Make histogram for 2007 penguin flipper lengths
+hist(penguins$flipper_length_mm[penguins$year == "2007"],
+     prob = FALSE,
+     density = 10,
+     col = "red",
+     xlab = "Flipper Length (mm)",
+     ylab = "Number of Penguins",
+     main = "Histogram of Penguin Flipper Lengths")
+
+# Add histogram for 2008 penguin flipper lengths
+hist(penguins$flipper_length_mm[penguins$year == "2008"],
+     prob = FALSE,
+     density = 10,
+     col = "blue",
+     add = TRUE)
+
+# Add histogram for 2009 penguin flipper lengths
+hist(penguins$flipper_length_mm[penguins$year == "2009"],
+     prob = FALSE,
+     density = 10,
+     col = "purple",
+     add = TRUE)
+
+# Add a legend
+legend("topleft", c("2007", "2008", "2009"),
+       density = 10,
+       fill = c("red", "blue", "purple"))
+```
+
+Year: There are not any noticeable peaks in the histogram, in terms of distinct independent variables. Thus, it is clear that the year variable does not help to explain the bimodality in the flipper length data set.
+\newpage
+
+### Question 1(f)
+```{r Question 1f(i)}
+# create a scatter plot modeling penguin bill length vs. depth for Adelie
+plot(penguins$bill_depth_mm[penguins$species == "Adelie"] ~ 
+       penguins$bill_length_mm[penguins$species == "Adelie"],
+  main = "Penguins Bill Length and Bill Depth",
+  xlab = "Bill Length (mm)",
+  ylab = "Bill Depth (mm)",
+  xlim = c(30, 60),
+  ylim = c(12, 25),
+  pch = 16,
+  col = "green"
+)
+
+# create a scatter plot modeling penguin bill length vs. depth for Chinstrap
+points(penguins$bill_depth_mm[penguins$species == "Chinstrap"] ~ 
+       penguins$bill_length_mm[penguins$species == "Chinstrap"],
+  pch = 16,
+  col = "blue",
+)
+
+# create a scatter plot modeling penguin bill length vs. depth for Gentoo
+points(penguins$bill_depth_mm[penguins$species == "Gentoo"] ~ 
+       penguins$bill_length_mm[penguins$species == "Gentoo"],
+  pch = 16,
+  col = "purple",
+)
+
+# add a legend
+legend("topright", legend = c("Adelie", "Chinstrap", "Gentoo"),
+       fill = c("green", "blue", "purple"))
+```
+Bill length and depth: Adelie penguins generally have shorter bill lengths and greater bill depth, Chinstrap penguins generally have longer bill lengths and greater bill depth, and Gentoo penguins generally have longer bill length and smaller bill depth.
+
+```{r Question 1f(ii)}
+# Make histogram for Adelie flipper lengths
+hist(penguins$flipper_length_mm[penguins$species == "Adelie"],
+     prob = FALSE,
+     density = 10,
+     col = "red",
+     xlab = "Flipper Length (mm)",
+     ylab = "Number of Penguins",
+     xlim = c(150, 250),
+     main = "Histogram of Penguin Flipper Lengths")
+
+# Add histogram for Chinstrap flipper lengths
+hist(penguins$flipper_length_mm[penguins$species == "Chinstrap"],
+     prob = FALSE,
+     density = 10,
+     col = "blue",
+     add = TRUE)
+
+# Add histogram for Gentoo flipper lengths
+hist(penguins$flipper_length_mm[penguins$species == "Gentoo"],
+     prob = FALSE,
+     density = 10,
+     col = "purple",
+     add = TRUE)
+
+# Add a legend
+legend("topleft", c("Adelie", "Chinstrap", "Gentoo"),
+       density = 10,
+       fill = c("red", "blue", "purple"))
+```
+Flipper length: Adelie penguins generally have shorter flipper lengths, with Chinstrap penguins having medium flipper lengths, and Gentoo penguins having the longest flipper lengths.
+
+```{r Question f(iii)}
+# create a scatter plot modeling penguin body mass
+boxplot(penguins$body_mass_g ~ penguins$species,
+  main = "Penguins' Body Mass",
+  xlab = "Species of Penguin",
+  ylab = "Body Mass (g)",
+  col = c("green", "blue", "purple")
+)
+
+# add a legend
+legend("bottomright", legend = c("Adelie", "Chinstrap", "Gentoo"),
+       fill = c("green", "blue", "purple"))
+```
+Body mass: Adelie penguins generally have lower body mass but with greater variation than Chinstrap penguins, which have a similar body mass but with lower variation. Gentoo penguins have a generally higher body mass.
+\newpage
+
+### Question 1(g)
+```{r Question 1g}
+# box plots for penguins' flipper length across sex and species
+boxplot(penguins$flipper_length_mm ~ penguins$sex + penguins$species, 
+        main = "Box Plots for Penguins' Flipper Length Across Sex and Species",
+        xlab = "Sex and Species",
+        ylab = "Flipper Length (mm)",
+        names = c("F. Ade.", "M. Ade.", "F. Chi.", "M. Chi.", "F. Gen.", "M. Gen."),
+        col = c("orange", "pink")
+)
+```
+Flipper length differential across sex and species: Female Adelie penguins have shorter flippers than Male Adelies. Female Chinstraps have an even greater flipper length differential with Male Chinstraps, when compared to Adelies. Specifically, Male Chinstraps have longer flippers than Female Chinstraps. Female Gentoos have about the same flipper length differential with Male Gentoos, when compared to Chinstraps. Specifically, Male Gentoos have longer flippers than Female Gentoos.
+\newpage
+
+### Question 1(h)
+```{r Question 1h}
+# box plots for penguins' flipper length across island and species
+boxplot(penguins$flipper_length_mm ~ penguins$island + penguins$species, 
+        main = 
+          "Box Plots for Penguins' Flipper Length Across Island and Species",
+        xlab = "Island and Species",
+        ylab = "Flipper Length (mm)",
+        names = c("B. Ad.", "D. Ad.", "T. Ad.", "B. Ch.", "D. Ch.", "T. Ch.", 
+                  "B. Ge.", "D. Ge.", "T. Ge."),
+        col = c("yellow", "lightgreen", "lightblue")
+)
+```
+Island differential across species: The flipper length of Adelie Penguins is roughly the same across the Biscoe, Dream, and Torgersen islands. Based on the data set, the Chinstrap and Gentoo populations are located on a single island, them being Dream and Biscoe respectively, so data for their flipper lengths across all three different islands is not available.
+\newpage
+
+### Question 1(i)
+```{r Question 1i(i)}
+# Create a ggplot histogram for bill length - recreating 1(d)
+# install.packages("ggplot2")
+library(ggplot2)
+
+ggplot(penguins, aes(x = bill_length_mm)) +
+  geom_histogram(breaks = seq(20, 80, by = 6),
+                 fill = "lightblue",
+                 color = "black") +
+  xlab("Bill Length (mm)") +
+  ylab("Number of Penguins") +
+  xlim(20, 80) +
+  theme_minimal()
+```
+```{r Question 1i(ii)}
+# Create a ggplot for flipper length vs. bill length - recreating 1(e)
+ggplot(data = penguins) +
+  geom_point(aes(x = bill_length_mm, y = flipper_length_mm)) +
+  xlab("Bill Length (mm)") +
+  ylab("Flipper Length (mm)")
+```
+```{r Question 1i(iii)}
+# Create a ggplot boxplot for penguin body mass - recreating 1(f)
+ggplot(data = penguins) +
+  geom_boxplot(aes(x = body_mass_g, fill = species)) +
+  xlab("Body Mass (g)")
+```
+```{r Question 1i(iv)}
+# Create a ggplot boxplot for penguins' sex across species - recreating 1(g)
+ggplot(data = penguins) +
+  facet_wrap(~ species, scales = "free_x") +  # separate by species
+  geom_boxplot(aes(x = sex, y = flipper_length_mm, fill = sex, col = sex),
+               alpha = 0.8, na.rm = TRUE) +
+  scale_fill_manual(values = c("orange", "pink")) +
+  scale_color_manual(values = c("red", "green")) +
+  xlab("Sex and Species of Penguin") +
+  ylab("Flipper Length (mm)") +
+  theme_minimal()
+```
+```{r Question 1i(v)}
+# Create a ggplot boxplot for penguins' flipper length across island and species\n - recreating 1(h)
+ggplot(data = penguins) +
+  facet_wrap(~ island, scales = "free_x") +  # separate by island
+  geom_boxplot(aes(x = species, y = flipper_length_mm, fill = species, 
+                   col = species), alpha = 0.8, na.rm = TRUE) +
+  scale_fill_manual(values = c("orange", "pink", "blue")) +
+  scale_color_manual(values = c("red", "green", "yellow")) +
+  xlab("Island and Species of Penguin") +
+  ylab("Flipper Length (mm)") +
+  theme_minimal()
+```
+\newpage
+
+### Question 1(j)
+```{r Question 1j(i)}
+# ggplot box plots for penguins' bill lengths across sex and species
+ggplot(data = penguins) +
+  facet_wrap(~ species, scales = "free_x") +  # separate by species
+  geom_boxplot(aes(x = sex, y = bill_length_mm, fill = sex, col = sex),
+               alpha = 0.8, na.rm = TRUE) +
+  scale_fill_manual(values = c("orange", "pink")) +
+  scale_color_manual(values = c("red", "green")) +
+  xlab("Sex and Species of Penguin") +
+  ylab("Bill Length (mm)") +
+  theme_minimal()
+```
+```{r Question 1j(ii)}
+# ggplot box plots for penguins' bill lengths across sex and species
+ggplot(data = penguins) +
+  facet_wrap(~ species, scales = "free_x") +  # separate by species
+  geom_violin(aes(x = sex, y = bill_length_mm, fill = sex, col = sex),
+               alpha = 0.8, na.rm = TRUE) +
+  scale_fill_manual(values = c("orange", "pink")) +
+  scale_color_manual(values = c("red", "green")) +
+  xlab("Sex and Species of Penguin") +
+  ylab("Bill Length (mm)") +
+  theme_minimal()
+```
+The ggplot box plots and ggplot violin plots both model the penguins' bill lengths across sex species. The box plots do a good job showing the five number summary, specifically including the median, quartile, and outlier values. The violin plots clear show the minimum and maximum values, but do not explicitly show the median, quartile, and outlier values. On the other hand, the violin plots do a good job showing the shape of the data, specifically showing skewedness and distribution, which would otherwise go overlooked in a box plot. Additionally, box plots are a more recognizable form of data visualization for general viewers, whereas violin plots are not.
+\newpage
+
+### Question 1(k)
+Investigative question: Is there a significant difference between the true proportion of male Adelie penguins living on Dream Island and the true proportion of male Chinstrap penguins living on Dream Island, excluding NA values?
+```{r Question 1k}
+# two-prop z test for a difference in proportions
+
+p0 <- 0.5
+v1 <- 28
+v2 <- 34
+n1 <- 55
+n2 <- 68
+pc <- (v1 + v2) / (n1 + n2)
+
+z_statistic <- (v1/n1 - v2/n2) / (sqrt(pc * (1 - pc) * (1/n1 + 1/n2)))
+z_statistic
+```
+
+A z-statistic of 0.100 corresponds to a p-value of 0.5398. Since p = 0.5398 is GREATER than alpha = 0.05 (significance level), we can conclude that there is NO significant difference between the true proportion of male Adelie penguins living on Dream Island and the true proportion of male Chinstrap penguins living on Dream Island.

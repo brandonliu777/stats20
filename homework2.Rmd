@@ -1,0 +1,401 @@
+---
+title: "Stats 20: Homework 2"
+author: "Brandon Liu -- UID: 306-375-425"
+date: "`2025-01-28`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '4'
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float: true
+    code_folding: show
+---
+
+\newpage
+## Question 1
+
+```{r Question 1 Background}
+mixed1 <- c(TRUE, FALSE, FALSE, TRUE, 4, 0, 3)
+mixed1
+mixed2 <- c(TRUE, FALSE, FALSE, TRUE, 4, 0, "3")
+mixed2
+mixed3 <- c(c(TRUE, FALSE, FALSE, TRUE, 4, 0), "3")
+mixed3
+```
+
+### (a)
+mixed 2 outputted all inputs in the form of character vectors since the concatenation function was concatenating logical vectors, numerical vectors, and character vectors, and character vectors supersede all other modes.
+
+mixed3 outputted True/False logical functions in their numerical vector equivalents of 1s and 0s since the first concatenation function was concatenating the logical vectors and numerical vectors, and numerical vectors supersede logical vectors. With the second concatenation function, 3 was inputted as a character vector and was outputted as such.
+
+### (b)
+<!-- ENTER YOUR ANSWER BELOW, IT CAN BE JUST THE COMMAND. NO NEED TO STORE AN OBJECT -->
+```{r Question 1b}
+c(c("TRUE", "FALSE"), c(FALSE, TRUE, 4, 0, 3))
+```
+
+\newpage
+## Question 2
+
+### (a)
+```{r Question 2a}
+as.numeric(mixed2)
+```
+
+```{r Question 2ai}
+as.numeric(mixed3)
+```
+as.numeric(mixed2) converts all character vector outputs to numeric vectors. NAs (not availables) are returned because the character vectors of "TRUE" and "FALSE" cannot be converted to a numeric vector. If they were in their regular logical vector form of TRUE and FALSE, then they would convert to 1s and 0s.
+
+as.numeric(mixed3) converts the TRUE and FALSE inputs to numeric vectors due to the initial concatenation function. When running the as.numeric() function, the TRUEs and FALSEs outputted as 1s and 0s since they were already set to numeric vector form.
+
+### (b)
+```{r Question 2b}
+as.logical(mixed2)
+as.logical(mixed3)
+```
+as.logical(mixed2) converts all character vectors to logical vectors. Since  "TRUE" and "FALSE" correspond to TRUE and FALSE logical vectors, these inputs printed as such. However, the character vectors of "4", "0", and "3" do not correspond to TRUE and FALSE logical vectors, thus outputting NA values.
+
+as.logical(mixed3) converts all numeric vectors from the first concatenation string to logical vectors, and the lone character vector "3" to a logical vector. Since the TRUEs and FALSEs were converted to 1s and 0s and 1s and 0s do not correspond to logical vectors (instead, it's the other way around), NA values  were outputted since numbers cannot be converted to logical vectors. The character "3" vector also does not correspond to TRUE or FALSE, thus outputting an NA value.
+
+### (c)
+```{r Question 2c}
+# convert all inputs to numeric vectors and then convert to logical vectors
+as.logical(as.numeric(mixed3))
+# any number other than 0 is outputted as TRUE
+```
+
+\newpage
+## Question 3
+
+### (a)
+```{r Question 3a}
+# seq() function
+seq(1, 25)
+# colon : operator
+seq(1:25)
+# seq_len() function
+seq_len(25)
+# seq_along function
+x <- seq(1, 25)
+seq_along(x)
+# seq_along gives same length as object input, and by extension, same elements
+```
+
+### (b)
+```{r Question 3b(i)}
+# 'by' value is negative since the sequence is decreasing
+seq(8, 2, -0.5)
+```
+```{r Question 3b(ii)}
+# sequence from -1 to 5; omit elements, 3, 4, & 6, which correspond to 1, 2, & 4
+rep(seq(-1, 5)[-c(3, 4, 6)], times = 5)
+```
+
+```{r Question 3b(iii)}
+# use the TIMES parameter to repeat the entire sequence
+rep(seq(5, 1), times = 5)
+```
+
+```{r Question 3b(iv)}
+# use the EACH parameter to repeat individual numbers
+rep(seq(5, 1), each = 5)
+```
+
+```{r Question 3b(v)}
+# use the times 1:5 to repeat numbers in the sequence 1 to 5 times
+# you can't use 'each' because the number of repetitions is not constant
+rep(seq(10, 6), times = 1:5)
+```
+
+### (c)
+The sequence cannot be generated using only the seq() and rep() functions because the boundaries of the sequence are changing each time, incrementally by 1, and are thus, not repeating in a consistent way.
+
+```{r Question 3c}
+# subtract 0 from first 5 numbers (10 to 6), then 1 from next 5, then 2, & so on
+seq(10, 6, -1) - rep(0:4, each = 5)
+```
+
+\newpage
+## Question 4
+```{r Question 4}
+k <- seq(0, 100, 1)
+sin(k * pi)
+```
+The sine values for intervals of pi are outputted. Thinking about the unit circle, I know that for any whole number multiplied by pi, the sine output is 0. The results are what I would expect mathematically, because they are all near 0. The noticeable discrepancies are due to minor rounding and computing errors, particularly in dealing with irrational numbers like pi.
+
+\newpage
+## Question 5
+
+### (a)
+<!-- USE THE CODE CHUNK BELOW -->
+```{r Question 5a}
+# running times
+x1 <- c(51, 40, 57, 34, 47, 50, 50, 56, 41, 38)
+
+# find the coefficient of skewness
+
+# numerator expression
+n1 <- length(x1)
+xbar1 <- mean(x1)
+devs <- x1 - xbar1
+cubed_devs <- devs^3
+sum_cubed_devs <- sum(cubed_devs)
+numerator1 <- sqrt(n1) * sum_cubed_devs
+numerator1
+
+# denominator expression
+squared_devs <- devs^2
+sum_squared_devs <- sum(squared_devs)
+denominator1 <- sum_squared_devs^(3/2)
+denominator1
+
+# calculate skewness
+skew1 <- numerator1 / denominator1
+skew1
+```
+
+### (b)
+```{r Question 5b}
+# running times
+x1 <- c(51, 40, 57, 34, 47, 50, 50, 56, 41, 38)
+
+# find the coefficient of skewness using the one-pass formula
+
+# numerator expression
+n2 <- length(x1)
+xbar2 <- mean(x1)
+summations <- sum(x^3) - 3 * xbar2 * sum(x^2) + 2 * n2 * xbar2^3
+numerator2 <- sqrt(n2) * summations
+numerator2
+
+# denominator expression
+summation <- sum(x^2)
+denominator2 <- summation - n2 * xbar2^2
+denominator2
+
+# calculate skewness
+skew2 <- numerator2 / denominator2
+skew2
+```
+
+### (c)
+```{r Question 5c(a)}
+# running times
+x2 <- c(51, 40, 57, 34, 47, 50, 50, 56, 41, 38, 1e6)
+
+# find the coefficient of skewness
+
+# numerator expression
+n1 <- length(x2)
+xbar1 <- mean(x2)
+devs <- x2 - xbar1
+cubed_devs <- devs^3
+sum_cubed_devs <- sum(cubed_devs)
+numerator1 <- sqrt(n1) * sum_cubed_devs
+numerator1
+
+# denominator expression
+squared_devs <- devs^2
+sum_squared_devs <- sum(squared_devs)
+denominator1 <- sum_squared_devs^(3/2)
+denominator1
+
+# calculate skewness
+skew1 <- numerator1 / denominator1
+skew1
+```
+
+```{r Question 5c(b)}
+# running times
+x1 <- c(51, 40, 57, 34, 47, 50, 50, 56, 41, 38, 1e6)
+
+# find the coefficient of skewness using the one-pass formula
+
+# numerator expression
+n2 <- length(x1)
+xbar2 <- mean(x1)
+summations <- sum(x1^3) - 3 * xbar2 * sum(x1^2) + 2 * n2 * xbar2^3
+numerator2 <- sqrt(n2) * summations
+numerator2
+
+# denominator expression
+summation <- sum(x1^2)
+denominator2 <- summation - n2 * xbar2^2
+denominator2
+
+# calculate skewness
+skew2 <- numerator2 / denominator2
+skew2
+```
+
+The results differ between from my answers in (a) and (b). They differ due to low precision errors. In particular, when the x values become too large, they are stored with low precision. However, in reality, they should be the same because adding a constant to a data set shifts the entire distribution, including the mean, but does not change the shape or skewness of the distribution.
+
+### (d)
+The results differed because of minor rounding and computing errors, particularly due to the data having very large numbers, such as 10^6.
+
+\newpage
+## Question 6
+
+### (a)
+```{r Question 6}
+# Write code computing number of vector elements WITHOUT length() function. 
+# Test your code on three vectors.
+
+count_elements <- function(x) {
+  # create a count elements function
+  elements <- seq_len(1e6)
+  # assign elements to a long numeric vector sequence
+  valid_elements <- !is.na(x[elements])
+  # recycle x in the sequence; turn all NAs to FALSE using !
+  # if an element is NA, it IS NOT not a number, reporting FALSE
+  sum(valid_elements)
+  # use !is.na() instead of is.na() to report only TRUE values (values you want to count)
+}
+count_elements(x)
+```
+
+```{r Question 6a}
+x <- numeric(0)
+count_elements(x)
+```
+
+### (b)
+<!-- USE THE CODE CHUNK BELOW -->
+```{r Question 6b}
+x <- seq(1, 99, 2)
+count_elements(x)
+```
+
+### (c)
+<!-- USE THE CODE CHUNK BELOW -->
+```{r Question 6c}
+x <- c("waffles", "friends", "work")
+count_elements(x)
+```
+
+\newpage
+## Question 7
+
+### (a)
+```{r Question 7}
+# Write code reversing the order of vector elements in a vector WITHOUT rev() function. 
+# Test your code on three vectors.
+
+reverse_elements <- function(x){
+  x[length(x):1] # output the sequence of x from length(x) to the first element
+}
+
+reverse_elements(x)
+```
+
+```{r Question 7a}
+x <- numeric(0)
+reverse_elements(x)
+```
+
+### (b)
+<!-- USE THE CODE CHUNK BELOW -->
+```{r Question 7b}
+x <- seq(1, 99, 2)
+reverse_elements(x)
+```
+
+### (c)
+<!-- USE THE CODE CHUNK BELOW -->
+```{r Question 7c}
+x <- c("waffles", "friends", "work")
+reverse_elements(x)
+```
+
+\newpage
+## Question 8
+
+### (a)
+```{r Question 8ai}
+first_elements <- function(x, n){
+  x[seq_len(min(n, length(x)))] # output x using the seq_len function
+  # seq_len can only have one input, so take the minimum of n or length of x
+  # if n < length(x), compute the first n elements of x
+  # if length(x) < n, compute the first length(x) elements of x
+}
+
+x <- numeric(0)
+n <- 6
+first_elements(x, n)
+```
+
+```{r Question 8a(ii)}
+x <- seq(1, 99, 2)
+n <- 6
+first_elements(x, n)
+```
+
+```{r Question 8a(iii)}
+x <- c("waffles", "friends", "work")
+n <- 6
+first_elements(x, n)
+```
+
+```{r Question 8a(iv)}
+x <- numeric(0)
+n <- 0
+first_elements(x, n)
+```
+
+```{r Question 8a(v)}
+x <- seq(1, 99, 2)
+n <- 0
+first_elements(x, n)
+```
+
+```{r Question 8(vi)}
+x <- c("waffles", "friends", "work")
+n <- 0
+first_elements(x, n)
+```
+
+### (b)
+```{r Question 8bi}
+last_elements <- function(x, n){
+  x[(max(length(x) - (n - 1), 1)):length(x)][length(x) > 1]
+}
+
+x <- numeric(0)
+n <- 6
+last_elements(x, n)
+```
+
+```{r Question 8b(ii)}
+x <- seq(1, 99, 2)
+n <- 6
+last_elements(x, n)
+```
+
+```{r Question 8b(iii)}
+x <- c("waffles", "friends", "work")
+n <- 6
+last_elements(x, n)
+```
+
+```{r Question 8b(iv)}
+# verify with n = 0 that the code works on ONE of the aforementioned vectors
+# see verified output for x <- numeric(0) below
+x <- numeric(0)
+n <- 0
+last_elements(x, n)
+```
+
+```{r Question 8b(v)}
+x <- seq(1, 99, 2)
+n <- 0
+last_elements(x, n)
+```
+
+```{r Question 8b(vi)}
+x <- c("waffles", "friends", "work")
+n <- 0
+last_elements(x, n)
+```

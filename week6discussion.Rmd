@@ -1,0 +1,155 @@
+---
+title: "STATS 20: Week 6 Discussion Assignment"
+author: "Brandon Liu"
+date: "02/11/2025"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '4'
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float: true
+    code_folding: show
+---
+\newpage
+## Problem 1: Creating and Editing Data Frames
+(a)
+```{r Question 1a}
+w <- c("UCLA", "USC", "UCSB")
+x <- c(33040 ,21023, 23232)
+y <- c(TRUE, FALSE, TRUE)
+z <- c(25, 10, 14)
+
+# create a data frame called "schools"
+schools <- data.frame(
+  Name = w,
+  Undergrad_Enrollment = x,
+  Public = y,
+  Nobel_Prize_Winners = z
+)
+schools
+```
+(b)
+```{r Question 1b}
+# add a new column called "Students_Per_Nobel" to the "schools" data frame
+schools$Students_Per_Nobel <- x / z
+schools
+```
+(c)
+```{r Question 1c}
+# create a logical vector for the rows
+# specifically, output all the rows for which the 3rd column (Public) is TRUE
+# output all columns for these subsetted rows
+schools$Public <- as.logical(schools$Public)
+public_schools <- schools[schools[, 3] == TRUE, -5]
+# previous code inexplicably created a new "public" column, so I indexed it out
+public_schools
+```
+(d)
+```{r Question 1d}
+public_schools$Public <- NULL
+# rename the "Undergrad_Enrollment" column to "Students"
+# if the reverse of "Students <- names(...) was assigned, it would assign the name to a new variable, instead of changing the data frame
+names(public_schools)[names(public_schools) == "Undergrad_Enrollment"] <-
+  "Students"
+names(public_schools)
+public_schools
+```
+\newpage
+## Problem 2: Loading and Extracting Data from Data Frames
+(a)
+```{r Question 2a}
+# use quotes around MASS since the package name is a string
+# install.packages("MASS")
+# no quotes around MASS since this is a known package now
+library(MASS)
+```
+(b)
+```{r Question 2b(i)}
+data("survey")
+head(survey)
+```
+```{r Question 2b(ii)}
+str(survey)
+# Numeric variable: height
+# Factor variable: writing hand
+
+# recall that factor variables represent categorical data (text or numbers that represent groups or levels)
+```
+(c)
+```{r Question 2c(i)}
+# Extract "age" column from the survey dataset
+
+# use single square brackets
+survey[, 12]
+```
+```{r Question 2c(ii)}
+# use double square brackets
+survey[[12]]
+```
+```{r Question 2c(iii)}
+# use $
+survey$Age
+```
+(d)
+```{r Question 2d}
+# maximum age of male students in survey data set
+names(survey)
+max(survey$Age[survey$Sex == "Male"], na.rm = TRUE)
+```
+```{r Question 2d(ii)}
+sum(survey$Sex == "Male", na.rm = TRUE)
+```
+(e)
+```{r Question 2e}
+# average height of female students who never smoke
+mean(survey$Height[survey$Sex == "Female" &
+                     survey$Smoke == "Never"], na.rm = TRUE)
+# used & to check conditions for all rows (rather than just the 1st row)
+```
+\newpage
+## Problem 3: Lists
+(a)
+```{r Question 3a}
+z <- list(1,2,TRUE, FALSE)
+data <- list(NA, z, 3 ,TRUE)
+
+length(data)
+```
+(b)
+```{r Question 3b}
+# rename the entries in "data"
+# rename without subsetting names(data) because we're renaming all columns
+names(data) <- c("first_entry", "inner_list", "numeric_entry", "last_one")
+names(data)
+```
+(c)
+```{r Question 3c}
+# extract 3rd element of "inner_list" inside the "data" list
+# inner_list corresponds to 'z' in "data", which is the 2nd element of the list
+data[[2]][3]
+```
+(d)
+Lists differ from vectors in that they can contain elements of different data types (e.g., numeric, character, logical), whereas vectors can only contain elements of the same data type. Additionally, when subsetting, lists can return individual elements (with [[ ]]) or sub-list elements (with [ ]), while vectors always return a subset of the same data type.
+
+\newpage
+## Problem 4: rbind() or cbind()?
+(a)
+```{r Question 4(i)}
+trees_1 <- data.frame("Name" = c("Redwood", "Cedar", "Oak"),
+                      "Size" = c("Tall", "Medium", "Medium"))
+trees_1
+```
+```{r Question 4(ii)}
+trees_2 <- data.frame("Name" = c("Dwarf Apple Tree", "Pine"),
+                      "Size" = c("Small", "Medium"))
+trees_2
+```
+```{r Question 4(iii)}
+# merge together data frames into a single data frame using cbind() or rbind()
+# rbind() makes more sense since we need to add add'l rows of trees
+# cbind() would make sense if we were adding more column characteristics (e.g., location, height)
+
+rbind(trees_1, trees_2)
+```
