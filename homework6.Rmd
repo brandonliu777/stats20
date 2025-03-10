@@ -1,0 +1,315 @@
+---
+title: 'Stats 20: Homework 6 Assignment'
+author: "Brandon Liu"
+date: "2025-03-08"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '4'
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float: true
+    code_folding: show
+  word_document:
+    toc: true
+    toc_depth: '4'
+---
+\newpage
+
+## Question 1
+(a)
+```{r Question 1}
+# source: used Microsoft CoPilot to create the functions
+
+# Helper function to identify vowels
+is_vowel <- function(letter) {
+  letter %in% c("a", "e", "i", "o", "u", "y")
+}
+
+# Helper function to remove special endings
+is_special_ending <- function(ending) {
+  is_es <- all(ending == c("e", "s"))
+  is_ed <- all(ending == c("e", "d"))
+  is_e_not_le <- ending[2] == "e" & ending[1] != "l"
+  is_es | is_ed | is_e_not_le
+}
+
+rm_special_endings <- function(word_letters) {
+  word_tail <- tail(word_letters, n = 2)
+  if (is_special_ending(word_tail)) {
+    if (word_tail[2] == "e") {
+      word_letters[-length(word_letters)]
+    } else {
+      head(word_letters, n = -2)
+    }
+  } else {
+    word_letters
+  }
+}
+
+# Helper function to count syllables in a word
+count_syllables <- function(word) {
+  word_letters <- unlist(strsplit(word, split = ""))
+  if (length(word_letters) <= 3) {
+    1
+  } else {
+    word_letters <- rm_special_endings(word_letters)
+    word_vowels <- is_vowel(word_letters)
+    sum(word_vowels) - sum(diff(which(word_vowels)) == 1)
+  }
+}
+
+# Helper function to keep valid words
+keep_words <- function(words) {
+  words[nchar(words) > 0]
+}
+
+# Helper function to count sentences
+count_sentences <- function(text) {
+  sentences <- unlist(strsplit(text, "[.!?:;]"))
+  sentences <- sentences[sentences != ""]
+  return(length(sentences))
+}
+
+# Helper function to count words
+count_words <- function(sentences) {
+  words <- lapply(sentences, function(sentence) {
+    unlist(strsplit(sentence, " "))
+  })
+  words <- lapply(words, keep_words)
+  return(words)
+}
+
+# Main function for Flesch Reading Ease Score
+reading_ease <- function(text) {
+  if (length(text) > 1) {
+    text <- paste(text, collapse = " ")  # Collapse vector into a single string
+  }
+  
+  # Preprocess text: lowercase and remove punctuation
+  sentences <- tolower(unlist(strsplit(text, "[.!?:;]")))
+  sentences <- gsub(pattern = "[[:punct:]]", replacement = "", sentences)
+  sentences <- sentences[sentences != ""]
+  
+  # Count sentences
+  total_sentences <- length(sentences)
+  
+  # Count words
+  words_list <- count_words(sentences)
+  total_words <- sum(sapply(words_list, length))
+  
+  # Count syllables
+  total_syllables <- sum(sapply(unlist(words_list), count_syllables))
+  
+  # Compute Flesch Reading Ease Score
+  score <- 206.835 - 1.015 * (total_words / total_sentences) - 84.6 * (total_syllables / total_words)
+  return(round(score, 5))  # Round for precision
+}
+```
+
+(b)
+```{r Question 1b}
+# Test with waffles_vec
+waffles_vec <- c(
+  "We need to remember what's important in life: friends, waffles, work.",
+  "Or waffles, friends, work.",
+  "Doesn't matter, but work is third."
+)
+
+score <- reading_ease(waffles_vec)
+print(score)
+```
+\newpage
+
+## Question 2
+```{r Question 2}
+# create a my_nchar() function to count the number of characters in a string
+
+my_nchar <- function(x) {
+  # Check if the input is a character vector
+  if (!is.character(x)) {
+    return(NULL) # when the input is not a character vector
+  }
+  
+  # Initialize result to be a numeric vector of the # of characters in a string
+  result <- numeric(length(x))
+  
+  for (i in seq_along(x)) {
+    if (is.na(x[i])) {
+      # If the character string contains NA, return NA
+      result[i] <- NA
+    } else {
+      # Split each string into individual characters
+      # Count the number of characters
+      # Extract the list output
+      result[i] <- length(strsplit(x[i], "")[[1]])
+    }
+  }
+  
+  return(result)
+}
+
+# Main use cases
+my_nchar("happy")
+my_nchar(c("happy", "sad"))
+
+# Edge case 1: emopty character vector
+my_nchar(character(0))
+
+# Edge case 2: spaces as characters
+my_nchar(c("", " ", "   "))
+
+# Edge case 3: NA values
+my_nchar(c(NA, "NAN"))
+
+# Edge case 4: special character values
+my_nchar("!@#$%")
+```
+\newpage
+
+## Question 3
+```{r Question 3}
+# create a my_strrep() function that repeats a character vector a # of times
+
+my_strrep <- function(x, times) {
+  # Initialize result to be an empty vector
+  result <- c()
+  # Initialize times to repeat iterations for as long as the length of x
+  times <- rep(times, length.out = length(x))
+  for (i in seq_along(x)) {
+    if (is.na(times[i])) {
+      # If the times input is NA, return NA
+      result[i] <- NA
+    }
+    else {
+      # repeat each x input by repeating it 'times' times, concatenate with " "
+      repeated <- paste(rep((x[i]), times[i]), collapse = " ")
+      # concatenate the (empty vector and) repeated x
+      result <- c(result, repeated)
+    }
+  return(result)
+  }
+}
+
+# Main use cases
+my_strrep("hi", 3)
+my_strrep(c("hi", "bye"), c(2, 3))
+
+# Edge case 1: empty x and times argument
+my_strrep(character(0), integer(0))
+
+# Edge case 2: times argument of 0
+my_strrep("hi", 0)
+
+# Edge case 3: recycling times argument
+my_strrep(c("hi", "bye"), c(2))
+
+# Edge case 4: NA values in x
+my_strrep(c("hello", NA), c(2, 3))
+
+# Edge case 5: NA value in times argument
+my_strrep(c("hello", "bye"), NA)
+```
+\newpage
+
+## Question 4
+```{r Question 4}
+`%is_in%` <- function (x, y) {
+  result <- logical(length(x))
+  for (i in seq_along(x)) {
+    result[i] <- any(x[i] == y)
+  }
+  return(result)
+}
+
+# Main use cases
+x <- c("a", "b", "c")
+y <- c("c", "d", "e")
+x %is_in% y
+y %is_in% x
+
+# Edge case 1: empty vector
+x <- c()
+y <- c("c", "d", "e")
+x %is_in% y
+y %is_in% x
+
+# Edge case 2: NA values
+x <- NA
+y <- c("c", "d", "e")
+x %is_in% y
+y %is_in% x
+
+# Edge case 3: recycling values
+x <- c("a", "b", "c")
+y <- c("a", "z")
+x %is_in% y
+y %is_in% x
+
+# Edge case 4: repeated values
+x <- c("a", "a", "a")
+y <- c("a", "z")
+x %is_in% y
+y %is_in% x
+```
+\newpage
+
+## Question 5
+```{r Question 5}
+# source: used ChatGPT to create the function
+
+# create a my_gregexpr function
+my_gregexpr <- function(pattern, text) {
+  # Function to find all occurrences of pattern in a single string
+  find_matches <- function(pattern, string) {
+    match_positions <- integer(0)  # Initialize empty vector for positions
+    start <- 1  # Start looking from the first character
+    pattern_len <- nchar(pattern)  # Length of the pattern
+    
+    # Loop to find all occurrences of the pattern in the string
+    while (start <= nchar(string) - pattern_len + 1) {
+      # Extract the substring starting at the current position with the same length as the pattern
+      substring_to_check <- substr(string, start, start + pattern_len - 1)
+      
+      if (substring_to_check == pattern) {
+        # If the substring matches the pattern, store the starting position
+        match_positions <- c(match_positions, start)
+        # Move the starting position beyond the current match (disjoint matches)
+        start <- start + pattern_len
+      } else {
+        # If no match, move one position to the right and continue checking
+        start <- start + 1
+      }
+    }
+    
+    if (length(match_positions) == 0) {
+      return(-1)  # No matches found
+    }
+    return(match_positions)
+  }
+  
+  # Apply `find_matches` to each element of the 'text' vector
+  result <- lapply(text, find_matches, pattern = pattern)
+  return(result)
+}
+
+# Test function to compare output with `gregexpr`
+test_my_gregexpr <- function() {
+  pattern <- "aa"
+  text1 <- c("aaa", "aab", "abc", "baaa", "bbb")
+  
+  result1 <- my_gregexpr(pattern, text1)  # Using our function
+  expected1 <- gregexpr(pattern, text1)  # Using R's built-in function
+  
+  # Compare the positions of the matches, ignoring any extra attributes
+  result_positions1 <- lapply(result1, function(x) ifelse(x == -1, -1, x))
+  expected_positions1 <- lapply(expected1, function(x) ifelse(x == -1, -1, unlist(x)))
+  
+  # Compare the match positions
+  print(all(unlist(result_positions1) == unlist(expected_positions1)))  # Should return TRUE
+}
+
+# Run the test function
+test_my_gregexpr()
+```
