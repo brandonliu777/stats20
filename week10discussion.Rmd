@@ -1,0 +1,224 @@
+---
+title: "Week 10 Discussion Assignment"
+author: "Brandon Liu"
+date: "2025-03-12"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '4'
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float: true
+    code_folding: show
+  word_document:
+    toc: true
+    toc_depth: '4'
+---
+\newpage
+
+## Problem 1
+Without using `paste` function, write a function named as `my_paste` such that it can perform the same functionality as `paste` in `R`. You are not allowed to use any string manipulation functions except for `%+%`, which is defined as below.
+```{r Problem 1}
+# Using %+$ operator for string concatenation
+`%+%` <- function(a, b) {paste0(a, b)}
+
+# create a my_paste() function
+my_paste <- function(..., sep = " ", collapse = NULL) {
+  # combine all elements into a character vector
+  x <- as.character(c(...))
+  
+  # if the collapse argument is provided
+  if (!is.null(collapse)) {
+    # combine all elements into a single string separated by collapse
+    result <- x[1] # start with the first element of x
+    for (i in 2:length(x)) {
+      result <- result %+% collapse %+% x[i] # append each element with collapse
+    }
+    return(result) # return the collapsed result
+  }
+  
+  # if the collapse argument is defaulted NULL
+  if (length(x) > 1) {
+    # combine all elements into a single string separated by sep
+    result <- x[1] # start with the first element of x
+    for (i in 2:length(x)) {
+      result <- result %+% sep %+% x[i] # append each element with sep
+    }
+    return(result) # return the final result
+  }
+  else { # when my_paste() only has one argument
+    return(x[1]) # return the single argument
+  }
+}
+
+### Test Cases
+# ONE: numeric input should be handled by coercion
+paste("I ate some", pi, "and it was delicious.")
+my_paste("I ate some", pi, "and it was delicious.")
+
+# TWO: sep and collapse
+paste("a", "b", sep = "&", collapse = " - ")
+my_paste("a", "b", sep = "&", collapse = " - ")
+
+paste(c("a", "b"), sep = "&", collapse = " - ")
+my_paste(c("a", "b"), sep = "&", collapse = " - ")
+
+paste(c("a", "b"), c("c", "d"), c("e", "f"), sep = "&", collapse = " - ")
+my_paste(c("a", "b"), c("c", "d"), c("e", "f"), sep = "&", collapse = " - ")
+
+# THREE: recycling
+paste("h", c("a", "e", "o"), sep = "")
+my_paste("h", c("a", "e", "o"), sep = "")
+
+paste(c("one", "two"), c("1", "2", "3"))
+my_paste(c("one", "two"), c("1", "2", "3"))
+```
+\newpage
+
+## Problem 2
+Let's print out integers in a "pretty" way! If the input is an integer, then we should add commas every three digits, e.g. 10000 -> 10,000. Otherwise, we give an warning "Input must be an integer".
+```{r Problem 2}
+# create a pretty_integer function (adds in appropriate commas)
+pretty_integer<- function(x){
+  if (!is.integer(x)) {
+    warning("Input must be an integer")
+  }
+  # start with an absolute value string and handle negatives separately
+  num_str <- as.character(abs(x))
+  result <- "" # start with an empty string
+  
+  while (nchar(num_str) > 3) { # process strings with more than 3 characters
+    # insert a comma before the last three digits and append to the result
+    result <- paste(",", substr(num_str, start = nchar(num_str) - 2, 
+                           stop = nchar(num_str)), result, sep = "")
+    # remove the last three digits from num_str for the next iteration
+    num_str <- substr(num_str, 1, nchar(num_str) - 3)
+  }
+  # combine remaining digits with the formatted result
+  result <- paste(num_str, result, sep = "")
+  
+  # Remove any unintended leading or trailing commas
+  result <- gsub("^,", "", result) # Remove leading commas
+  result <- gsub(",$", "", result) # Remove trailing commas
+  
+  if (x < 0) { # if x is a negative integer
+    result <- paste("-", result) # Add a negative sign before the result
+  }
+  return(result)
+}
+
+### Test Cases
+pretty_integer(1234567890L) # "1,234,567,890"
+pretty_integer(1234567890) # Warning in pretty_integer(1234567890) : Input must be an integer.
+```
+\newpage
+
+## Problem 3
+Extracting information from tweets using RegEx. A mention is the `@` symbol followed by a user name, it will send a notification to that user that someone replied to their post or mentioned them. A hashtag is the `#` symbol followed by a word or phrase that categorizes content.
+```{r Problem 3}
+tweets <- c("@UofCalifornia This is awesome! #STATS20 #uclabruins", 
+            "Pumped for programming #STATS20", 
+            "R is the best @UofCalifornia @UCLAUpdates # STATS20",
+            "Loving these #regex exercises! #STATS20 #R4ever",
+            "this is not a hashtag #",
+            "this is not a mention thomas.maierhofer@stat.ucla.edu")
+```
+
+(1) Extract all hashtags from the tweets above. What is the best way to store them?
+```{r Problem 3(1)}
+# extract all hastagged words from the tweets
+extract_hashtags <- function(tweet) {
+  # split tweet into words (1+ spaces)
+  # [[1]] since strsplit() outputs a list, want to extract the words in the list
+  words <- strsplit(tweet, "\\s+")[[1]]
+  hashtags <- words[grep("^#", words)] # find words starting with #
+  gsub("^#", "", hashtags) # replace the # symbol with "" (removing #)
+}
+
+# initialize an empty vector to store all hashtags
+all_hashtags <- c()
+
+# loop through each tweet and extract hashtags
+for (tweet in tweets) {
+  hashtags <- extract_hashtags(tweet) # extract hashtags from the current tweet
+  all_hashtags <- c(all_hashtags, hashtags) # append hashtags to all_hastags
+}
+
+# remove empty elements (if any)
+all_hashtags <- all_hashtags[all_hashtags != ""]
+all_hashtags
+```
+
+(2) Also extract mentions. Can you differentiate between replies (`@username` at the begining of a tweet) vs ordinary mentions (`@username` anywhere else in the tweet)? Store them separately. 
+```{r Problem 3(2)}
+# extract all mentioned users from the tweets
+extract_mentions <- function(tweet) {
+  # split tweet into words (1+ spaces)
+  # [[1]] since strsplit() outputs a list, want to extract the words in the list
+  words <- strsplit(tweet, "\\s+")[[1]]
+  mentions <- words[grep("^@", words)] # find words starting with @
+  gsub("^@", "", mentions) # replace the @ symbol with "" (removing @)
+}
+
+# initialize an empty vector to store all mentions
+all_mentions <- c()
+
+# loop through each tweet and extract mentions
+for (tweet in tweets) {
+  mentions <- extract_mentions(tweet) # extract mentions from the current tweet
+  all_mentions <- c(all_mentions, mentions) # append mentions to all_hastags
+}
+
+# remove empty elements (if any)
+all_mentions <- all_mentions[all_mentions != ""]
+all_mentions
+```
+\newpage
+
+## Problem 4
+`dplyr`: A Grammar of Data Manipulation. In this problem, we will use `dplyr` to manipulate the `starwars` dataset. Please note that `films`, `vehicles` and `starships` are stored as lists in the `starwars` dataset. You can ignore them for this problem.
+```{r Problem 4}
+library(dplyr)
+data(starwars)
+head(starwars)
+```
+(1) Use `select()` to select columns `name`, `height`, `mass`, `species`, and `homeworld`. Name the new data frame as `df_starwars`.
+```{r Problem 4(1)}
+# create a starwars data frame
+df_starwars <- as.data.frame(starwars)
+```
+
+```{r Problem 4(1ii)}
+# select specific columns to include in the data frame
+df_starwars |>
+  select(name, height, mass, species, homeworld)
+```
+
+(2) In your dataframe `df_starwars`, use `filter()` to find all human characters who are from either Tatooine or Alderaan. Name the new data frame as `df_starwars_filtered`.
+```{r Problem 4(2)}
+# filter rows for characters from Tatooine and Alderaan homeworlds
+df_starwars_filtered <- df_starwars |>
+  filter(homeworld == "Tatooine" | homeworld == "Alderaan")
+```
+
+(3) Use `mutate()` to add a new column `bmi` to `df_starwars_filtered` that calculates the BMI of each character. The formula for BMI is `mass / (height/100)^2`. What is the mean BMI of the characters in `df_starwars_filtered`?
+```{r Problem 4(3i)}
+# create a BMI column
+df_starwars_filtered <- df_starwars_filtered |>
+  mutate(bmi = mass / (height / 100)^2) |>
+  filter(!is.na(bmi)) # keep rows where bmi is NOT NA
+```
+
+```{r Problem 4(3ii)}
+# calculate the mean of the BMI column
+mean_bmi <- mean(df_starwars_filtered$bmi, na.rm = TRUE)
+mean_bmi
+```
+
+(4) Use `group_by()` and `summarize()` to find the mean BMI of characters in `df_starwars_filtered` for each `homeworld`.
+```{r Problem 4(4)}
+df_starwars_filtered |>
+  group_by(homeworld) |>
+  summarize(avg_bmi = mean(bmi, na.rm = TRUE))
+```
