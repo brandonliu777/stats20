@@ -20,35 +20,99 @@ output:
 ## Problem 1
 Without using `paste` function, write a function named as `my_paste` such that it can perform the same functionality as `paste` in `R`. You are not allowed to use any string manipulation functions except for `%+%`, which is defined as below.
 ```{r Problem 1}
-# Using %+$ operator for string concatenation
+# Define a custom operator for string concatenation
 `%+%` <- function(a, b) {paste0(a, b)}
 
-# create a my_paste() function
+# define a my_paste function that combines vectors element-wise
 my_paste <- function(..., sep = " ", collapse = NULL) {
-  # combine all elements into a character vector
-  x <- as.character(c(...))
+  # collect all input arguments into a list
+  arguments <- list(...)
   
-  # if the collapse argument is provided
+  # handle case with no input arguments
+  if (length(arguments) == 0) {
+    # return empty character vector when collapse isn't specified
+    if (is.null(collapse)) {
+      return(character(0))
+    # return empty string when collapse is specified
+    } else {
+      return("")
+    }
+  }
+  
+  # convert all elements to character vectors
+  arguments <- lapply(arguments, function(x) {
+    # handle empty vectors by converting to empty string
+    if (length(x) == 0) {
+      return("")
+    # convert non-empty vectors to character type
+    } else {
+      return(as.character(x))
+    }
+  })
+  
+  # calculate numeric lengths of all input vectors
+  lengths <- numeric(length(arguments))
+  
+  # record length of each argument vector
+  for (i in seq_along(arguments)) {
+    lengths[i] <- length(arguments[[i]])
+  }
+  
+  # determine maximum vector length after recycling
+  if (all(lengths == 0)) {
+    max_length <- 0  # all inputs are empty vectors
+  } else {
+    max_length <- max(lengths)  # find longest vector
+  }
+  
+  # create recycled versions of all vectors
+  recycled <- list()
+  
+  # recycle each vector to match maximum length
+  for (i in seq_along(arguments)) {
+    if (length(arguments[[i]]) == 0) {
+      # create empty string vector of max_length
+      recycled[[i]] <- rep("", max_length)
+    } else {
+      # recycle elements to reach max_length
+      recycled[[i]] <- rep(arguments[[i]], length.out = max_length)
+    }
+  }
+  
+  # combine vectors element-wise with separator
+  if (length(recycled) > 1) {
+    # start with first vector as base
+    result <- recycled[[1]]
+    
+    # sequentially combine with other vectors using separator
+    for (i in 2:length(recycled)) {
+      result <- result %+% sep %+% recycled[[i]]
+    }
+  } else {
+    # single vector requires no combination
+    result <- recycled[[1]]
+  }
+  
+  # handle collapse parameter if specified
   if (!is.null(collapse)) {
-    # combine all elements into a single string separated by collapse
-    result <- x[1] # start with the first element of x
-    for (i in 2:length(x)) {
-      result <- result %+% collapse %+% x[i] # append each element with collapse
+    # if result is empty
+    if (length(result) == 0) {
+      return("")
     }
-    return(result) # return the collapsed result
-  }
-  
-  # if the collapse argument is defaulted NULL
-  if (length(x) > 1) {
-    # combine all elements into a single string separated by sep
-    result <- x[1] # start with the first element of x
-    for (i in 2:length(x)) {
-      result <- result %+% sep %+% x[i] # append each element with sep
+    
+    # initialize collapsed with result's 1st element
+    collapsed <- result[1]
+    
+    # if result has more than one element, combine them using collapse
+    if (length(result) > 1) {
+      for (i in 2:length(result)) {
+        collapsed <- collapsed %+% collapse %+% result[i]
+      }
     }
-    return(result) # return the final result
-  }
-  else { # when my_paste() only has one argument
-    return(x[1]) # return the single argument
+    return(collapsed)
+  } else {
+    # return unmodified vector when no collapse is needed
+    return(result)
   }
 }
 
